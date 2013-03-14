@@ -1,0 +1,42 @@
+<h1>こんな時どうする？</h1>
+
+<p>項目を絞りこみたい場合は、キーワードを入力して「検索」ボタンを押下してください。</p>
+
+<form action="search" method="get">
+<table>
+  <tr>
+    <td>キーワード：</td>
+    <td><input name="keyWord"  type="text"></td>
+    <td><input name="searchButton" type="submit" value="検索（未実装）"></td>
+  </tr>
+</table>
+
+<p></p>
+
+<form action="detail" method="get">
+<table border="1">
+  <tr>
+    <th>ID</th>
+    <th>項目</th>
+    <th>登録者</th>
+    <th>ケース</th>
+    <th>手順</th>
+    <th>参照情報</th>
+  </tr>
+  <% @list.each do |item| %>
+    <% count = item.cases.length %>
+    <tr>
+    <td rowspan=<%= count %>><%= item.id %></td>
+    <td rowspan=<%= count %>><%= br item.name %></td>
+    <td rowspan=<%= count %>><%= item.update_user %></td>
+    <% item.cases.each do |a_case| %>
+      <td><%= br a_case.name %></td>
+      <% a_case.procedures.each do |procedure| %>
+        <td><%= auto_link((br procedure.name), :html => { :target => "_blank" }) %></td>
+        <td><%= auto_link((br procedure.reference), :html => { :target => "_blank" }) %></td>
+      <% end %>
+      </tr>
+    <% end %>
+  <% end %>
+  </tr>
+</table>
