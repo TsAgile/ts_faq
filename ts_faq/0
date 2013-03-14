@@ -1,2 +1,0 @@
-      invoke  active_record
-      create    db/migrate/20130308051907_add_details_to_items.rb
