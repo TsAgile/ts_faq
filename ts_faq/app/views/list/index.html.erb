@@ -6,14 +6,13 @@
 <table>
   <tr>
     <td>キーワード：</td>
-    <td><input name="keyWord"  type="text"></td>
-    <td><input name="searchButton" type="submit" value="検索（未実装）"></td>
+    <td><input name="keyWord"  type="text" value=<%= @keyWord %>></td>
+    <td><input name="searchButton" type="submit" value="検索"></td>
   </tr>
 </table>
 
 <p></p>
 
-<form action="detail" method="get">
 <table border="1">
   <tr>
     <th>ID</th>
