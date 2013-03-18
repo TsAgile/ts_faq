@@ -3,13 +3,25 @@
 <p>項目を絞りこみたい場合は、キーワードを入力して「検索」ボタンを押下してください。</p>
 
 <form action="search" method="get">
-<table>
-  <tr>
-    <td>キーワード：</td>
-    <td><input name="keyWord"  type="text" value=<%= @keyWord %>></td>
-    <td><input name="searchButton" type="submit" value="検索"></td>
-  </tr>
-</table>
+  <table>
+    <tr>
+      <td>キーワード：</td>
+      <td><input name="keyWord"  type="text" value=<%= @keyWord %>></td>
+      <td><input name="searchButton" type="submit" value="検索"></td>
+    </tr>
+  </table>
+</form>
+
+<p></p>
+
+<p>項目を新規追加したい場合は、「追加」ボタンを押下してください。編集、削除したい場合は、各項目の「変更」欄のリンクをクリックしてください。</p>
+<form action="add" method="get">
+  <table>
+    <tr>
+      <td><input name="addButton" type="submit" value="追加"></td>
+    </tr>
+  </table>
+</form>
 
 <p></p>
 
@@ -18,6 +30,7 @@
     <th>ID</th>
     <th>項目</th>
     <th>登録者</th>
+    <th>変更</th>
     <th>ケース</th>
     <th>手順</th>
     <th>参照情報</th>
@@ -28,6 +41,7 @@
     <td rowspan=<%= count %>><%= item.id %></td>
     <td rowspan=<%= count %>><%= br item.name %></td>
     <td rowspan=<%= count %>><%= item.update_user %></td>
+    <td rowspan=<%= count %>><%= link_to "編集", {:action => 'edit', :id => item.id} %><br><br><%= link_to "削除", @item ,method: :delete, data: { confirm: "本当に削除してよろしいですか？" } %></td>
     <% item.cases.each do |a_case| %>
       <td><%= br a_case.name %></td>
       <% a_case.procedures.each do |procedure| %>
@@ -39,3 +53,4 @@
   <% end %>
   </tr>
 </table>
+
