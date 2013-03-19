@@ -1,8 +1,11 @@
 class ListController < ApplicationController
+
+  # 一覧表示
   def index
     @list = Item.all
   end
   
+  # キーワード検索
   def search
     # キーワード
     @keyWord = params[:keyWord]
@@ -32,4 +35,18 @@ class ListController < ApplicationController
     render :action => 'index'
   end
   
+  # 追加
+  def add
+    @item = Item.new()
+    @item.cases.build
+    @item.cases[0].procedures.build
+    render :action => 'edit'
+  end
+
+  # 編集
+  def edit
+    @item = Item.find(params[:id])
+    render :action => 'edit'
+  end
+
 end
