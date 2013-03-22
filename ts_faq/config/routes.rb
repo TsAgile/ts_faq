@@ -65,5 +65,6 @@ TsFaq::Application.routes.draw do
   match 'list/index/add' => 'list#add'
   match 'list/index/edit' => 'list#edit'
   match 'list/index/delete' => 'list#delete'
+  match 'list/index/save' => 'list#save'
 
 end
