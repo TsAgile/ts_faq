@@ -6,7 +6,7 @@
   <table>
     <tr>
       <td>キーワード：</td>
-      <td><input name="keyWord"  type="text" value=<%= @keyWord %>></td>
+      <td><input name="keyWord"  type="text" value=<%= session[:keyWord] %>></td>
       <td><input name="searchButton" type="submit" value="検索"></td>
     </tr>
   </table>
@@ -41,7 +41,7 @@
     <td rowspan=<%= count %>><%= item.id %></td>
     <td rowspan=<%= count %>><%= br item.name %></td>
     <td rowspan=<%= count %>><%= item.update_user %></td>
-    <td rowspan=<%= count %>><%= link_to "編集", {:action => 'edit', :id => item.id} %><br><br><%= link_to "削除", @item ,method: :delete, data: { confirm: "本当に削除してよろしいですか？" } %></td>
+    <td rowspan=<%= count %>><%= link_to "編集", {:action => 'edit', :id => item.id} %><br><br><%= link_to "削除", {:action => "delete", :id => item.id }, :confirm => "本当に削除してよろしいですか？" %></td>
     <% item.cases.each do |a_case| %>
       <td><%= br a_case.name %></td>
       <% a_case.procedures.each do |procedure| %>

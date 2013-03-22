@@ -2,13 +2,13 @@
 
 <p>ケースを追加する場合は「追加」ボタンを押下してください。</p>
 <form action="add" method="get">
-  <input name="addButton" type="submit" value="ケース追加" onClick= "AddTableRows();"/>
+  <input name="addButton" type="button" value="追加" onClick="AddTableRows();"/>
 </form>
 
 <p>編集を保存する場合は「保存」ボタンを押下してください。</p>
-<form action="save method="get">
+<form action="save" method="get">
   <input name="saveButton" type="submit" value="保存">
-</table>
+</form>
 
 <p></p>
 
@@ -40,15 +40,39 @@
 </table>
 
 <script type="text/javascript">
+var counter = 0;
 function AddTableRows(){
-	// ★作成中（この状態では正しく行追加されません）★
+	// カウンタを回す
+	counter++;
+
+	// 行追加
 	var table1 = document.getElementById("table1");
 	var row1 = table1.insertRow(-1);
-	var cell1 = row1.insertCell(-1);
-	var cell2 = row1.insertCell(-1);
-	var cell3 = row1.insertCell(-1);
-	var cell4 = row1.insertCell(-1);
-	var cell5 = row1.insertCell(-1);
-	var cell6 = row1.insertCell(-1);
+	var cell1 = row1.insertCell(0);
+	var cell2 = row1.insertCell(1);
+	var cell3 = row1.insertCell(2);
+	var cell4 = row1.insertCell(3);
+
+	var HTML1 = '<textarea name="case' + counter + '" rows="20" cols="20"></textarea>';
+	var HTML2 = '<a href="/list/index/delete">削除</a>';
+	var HTML3 = '<textarea name="procedure' + counter + '" rows="20" cols="60"></textarea>';
+	var HTML4 = '<textarea name="reference' + counter + '" rows="20" cols="60"></textarea>';
+	cell1.innerHTML = HTML1;
+	cell2.innerHTML = HTML2;
+	cell3.innerHTML = HTML3;
+	cell4.innerHTML = HTML4;
+	
+	// セル結合
+	var row = table1.getElementsByTagName("tr")[1];
+	var col1 = row.getElementsByTagName("td")[0];
+	var col2 = row.getElementsByTagName("td")[1];
+	var col3 = row.getElementsByTagName("td")[2];
+	currRowSpan = col1.getAttribute("rowspan");
+	col1.rowSpan = (currRowSpan + 1);
+	col2.rowSpan = (currRowSpan + 1);
+	col3.rowSpan = (currRowSpan + 1);
+
+	// セル配置
+	cell2.vAlign = "top"
 }
 </script>
