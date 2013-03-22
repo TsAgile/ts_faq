@@ -8,14 +8,18 @@ class ListController < ApplicationController
   # キーワード検索
   def search
     # キーワード
+    @keyWord = params[:keyWord]
+  
     if(params[:keyWord] != nil && session[:keyWord] != params[:keyWord]) then
         session[:keyWord] = params[:keyWord]
     end
     
     # 項目の検索
+    @list = Item.find(:all, :conditions => ["name LIKE ?", "%" + @keyWord + "%"])
     @list = Item.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
     
     # ケースの検索
+    @cases = Case.find(:all, :conditions => ["name LIKE ?", "%" + @keyWord + "%"])
     @cases = Case.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
     @cases.each do |a_case|
       if !(@list.include?(a_case.item)) then
@@ -24,6 +28,7 @@ class ListController < ApplicationController
     end
     
     # 手順の検索
+    @procedures = Procedure.find(:all, :conditions => ["name LIKE ?", "%" + @keyWord + "%"])
     @procedures = Procedure.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
     @procedures.each do |procedure|
       if !(@list.include?(procedure.case.item)) then
@@ -50,6 +55,7 @@ class ListController < ApplicationController
     @item = Item.find(params[:id])
     render :action => 'edit'
   end
+
   
   # 削除
   def delete
@@ -62,7 +68,51 @@ class ListController < ApplicationController
   
   # 保存
   def save
-    index
-    render :action => 'index'
+    # 悲観的ロックを使用
+    
+    # DBから該当レコード取得
+    @item = Item.find(params[:itemid], :lock => true)
+    # 項目の登録
+    @item.name=params[:item]
+    # 登録者の登録
+    @item.update_user=params[:update_user]
+
+    # ケースの登録
+    # 手順の登録
+    # 参照情報の登録
+    @caseids = params[:caseid]
+    @casenames = params[:casename]
+    @procedurenames = params[:procedurename]
+    @references = params[:reference]
+    
+    @procedures = []
+    @cases = Case.find(:all, :conditions => ["item_id = ?", @item.id], :lock => true)
+    @cases.each do |a_case|
+       idx = 0
+       @caseids.each do |caseid|
+	       if (a_case.id.to_s == caseid) then
+		       a_case.name=@casenames[idx]
+		       procedure = Procedure.find(:first, :conditions => ["case_id = ?", a_case.id], :lock => true)
+		       procedure.name=@procedurenames[idx]
+		       procedure.reference=@references[idx]
+		       @procedures.push procedure
+	       end
+	       idx = idx + 1
+       end
+    end
+    
+    # 同一トランザクション内で処理
+    ActiveRecord::Base.transaction do
+       @item.save!
+       @cases.each do |a_case|
+           a_case.save!
+       end
+       @procedures.each do |a_proc|
+           a_proc.save!
+       end
+    end
+
+    render :action => 'saved'
   end
+
 end
