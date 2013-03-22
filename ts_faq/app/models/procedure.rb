@@ -1,4 +1,4 @@
 class Procedure < ActiveRecord::Base
-  attr_accessible :case_id, :procedure, :update_user, :reference
+  attr_accessible :case_id, :name, :reference
   belongs_to :case
 end
