@@ -8,18 +8,16 @@ class ListController < ApplicationController
   # キーワード検索
   def search
     # キーワード
-    @keyWord = params[:keyWord]
-  
-    if(params[:keyWord] != nil && session[:keyWord] != params[:keyWord]) then
+    if (session[:keyWord] == nil) then
+      session[:keyWord] = ""
+    elsif (params[:keyWord] != nil && session[:keyWord] != params[:keyWord]) then
         session[:keyWord] = params[:keyWord]
     end
     
     # 項目の検索
-    @list = Item.find(:all, :conditions => ["name LIKE ?", "%" + @keyWord + "%"])
     @list = Item.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
     
     # ケースの検索
-    @cases = Case.find(:all, :conditions => ["name LIKE ?", "%" + @keyWord + "%"])
     @cases = Case.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
     @cases.each do |a_case|
       if !(@list.include?(a_case.item)) then
@@ -28,7 +26,6 @@ class ListController < ApplicationController
     end
     
     # 手順の検索
-    @procedures = Procedure.find(:all, :conditions => ["name LIKE ?", "%" + @keyWord + "%"])
     @procedures = Procedure.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
     @procedures.each do |procedure|
       if !(@list.include?(procedure.case.item)) then
@@ -112,7 +109,7 @@ class ListController < ApplicationController
        end
     end
 
-    render :action => 'saved'
+    render :action => 'edit'
   end
 
 end

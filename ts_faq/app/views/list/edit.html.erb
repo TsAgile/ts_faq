@@ -1,5 +1,10 @@
 <h1>こんな時どうする？の編集</h1>
 
+<p>検索画面へ戻る場合は「戻る」ボタンを押下してください。</p>
+<form action="search" method="get">
+  <input name="backButton" type="submit" value="戻る">
+</form>
+
 <p>ケースを追加する場合は「追加」ボタンを押下してください。</p>
 <form action="add" method="post">
   <input name="addButton" type="button" value="追加" onClick="AddTableRows();"/>
@@ -8,37 +13,37 @@
 <p>編集を保存する場合は「保存」ボタンを押下してください。</p>
 <form action="save" method="post">
   <input name="saveButton" type="submit" value="保存">
+
+  <p></p>
+
+  <table border="1" id="table1">
+    <tr>
+      <th>ID</th>
+      <th>項目</th>
+      <th>登録者</th>
+      <th>ケース</th>
+      <th>変更</th>
+      <th>手順</th>
+      <th>参照情報</th>
+    </tr>
+    <% count = @item.cases.length %>
+    <tr>
+    <td rowspan=<%= count %> valign="top"><%= @item.id %><input type="hidden" name="itemid" value="<%= @item.id %>"></td>
+    <td rowspan=<%= count %> valign="top"><textarea name="item" rows="20" cols="20"><%= @item.name %></textarea></td>
+    <td rowspan=<%= count %> valign="top"><textarea name="update_user" rows="20" cols="5"><%= @item.update_user %></textarea></td>
+    <% @item.cases.each do |a_case| %>
+      <input type="hidden" name="caseid[]" value="<%= a_case.id %>">
+      <td valign="top"><textarea name="casename[]" rows="20" cols="20"><%= a_case.name %></textarea></td>
+      <td valign="top"><%= link_to "削除", {:action => 'delete', :id => a_case.id} %></td>
+      <% a_case.procedures.each do |procedure| %>
+        <td><textarea name="procedurename[]" rows="20" cols="60"><%= procedure.name %></textarea></td>
+        <td><textarea name="reference[]" rows="20" cols="60"><%= procedure.reference %></textarea></td>
+      <% end %>
+      </tr>
+    <% end %>
+    </tr>
+  </table>
 </form>
-
-<p></p>
-
-<table border="1" id="table1">
-  <tr>
-    <th>ID</th>
-    <th>項目</th>
-    <th>登録者</th>
-    <th>ケース</th>
-    <th>変更</th>
-    <th>手順</th>
-    <th>参照情報</th>
-  </tr>
-  <% count = @item.cases.length %>
-  <tr>
-  <td rowspan=<%= count %> valign="top"><%= @item.id %><input type="hidden" name="itemid" value="<%= @item.id %>"></td>
-  <td rowspan=<%= count %> valign="top"><textarea name="item" rows="20" cols="20"><%= @item.name %></textarea></td>
-  <td rowspan=<%= count %> valign="top"><textarea name="update_user" rows="20" cols="5"><%= @item.update_user %></textarea></td>
-  <% @item.cases.each do |a_case| %>
-    <input type="hidden" name="caseid[]" value="<%= a_case.id %>">
-    <td valign="top"><textarea name="casename[]" rows="20" cols="20"><%= a_case.name %></textarea></td>
-    <td valign="top"><%= link_to "削除", {:action => 'delete', :id => a_case.id} %></td>
-    <% a_case.procedures.each do |procedure| %>
-      <td><textarea name="procedurename[]" rows="20" cols="60"><%= procedure.name %></textarea></td>
-      <td><textarea name="reference[]" rows="20" cols="60"><%= procedure.reference %></textarea></td>
-  <% end %>
-  </tr>
-<% end %>
-</tr>
-</table>
 
 <script type="text/javascript">
 var counter = 0;
