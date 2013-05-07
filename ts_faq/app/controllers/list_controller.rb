@@ -8,11 +8,7 @@ class ListController < ApplicationController
   # キーワード検索
   def search
     # キーワード
-    if (session[:keyWord] == nil) then
-      session[:keyWord] = ""
-    elsif (params[:keyWord] != nil && session[:keyWord] != params[:keyWord]) then
-        session[:keyWord] = params[:keyWord]
-    end
+    session[:keyWord] = params[:keyWord]
     
     # 項目の検索
     @list = Item.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
