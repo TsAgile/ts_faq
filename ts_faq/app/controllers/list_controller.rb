@@ -7,8 +7,13 @@ class ListController < ApplicationController
   
   # キーワード検索
   def search
+  
     # キーワード
-    session[:keyWord] = params[:keyWord]
+    if(params[:keyWord] == nil) then
+      if(session[:keyWord] == nil) then session[:keyWord] = "" end
+    else
+      session[:keyWord] = params[:keyWord]
+    end
     
     # 項目の検索
     @list = Item.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
@@ -59,53 +64,43 @@ class ListController < ApplicationController
     search
   end
   
-  # 保存
+  # 保存（delete-insert方式）
   def save
-    # 悲観的ロックを使用
-    
-    # DBから該当レコード取得
-    @item = Item.find(params[:itemid], :lock => true)
-    # 項目の登録
-    @item.name=params[:item]
-    # 登録者の登録
-    @item.update_user=params[:update_user]
-
-    # ケースの登録
-    # 手順の登録
-    # 参照情報の登録
-    @caseids = params[:caseid]
-    @casenames = params[:casename]
-    @procedurenames = params[:procedurename]
-    @references = params[:reference]
-    
-    @procedures = []
-    @cases = Case.find(:all, :conditions => ["item_id = ?", @item.id], :lock => true)
-    @cases.each do |a_case|
-       idx = 0
-       @caseids.each do |caseid|
-	       if (a_case.id.to_s == caseid) then
-		       a_case.name=@casenames[idx]
-		       procedure = Procedure.find(:first, :conditions => ["case_id = ?", a_case.id], :lock => true)
-		       procedure.name=@procedurenames[idx]
-		       procedure.reference=@references[idx]
-		       @procedures.push procedure
-	       end
-	       idx = idx + 1
-       end
-    end
-    
+  
     # 同一トランザクション内で処理
     ActiveRecord::Base.transaction do
-       @item.save!
-       @cases.each do |a_case|
-           a_case.save!
-       end
-       @procedures.each do |a_proc|
-           a_proc.save!
-       end
-    end
+    
+      # 既存データがあれば削除
+      if (params[:itemid] != "") then
+        Item.delete(params[:itemid])
+      end
+      
+      # 項目を登録
+      @item = Item.new(:id => params[:itemid], :name => params[:item], :update_user => params[:update_user])
+      @item.save!
+      
+      # ケースと手順を登録
+      caseids = params[:caseid]
+      casenames = params[:casename]
+      procedurenames = params[:procedurename]
+      references = params[:reference]
 
+      @item.cases.build
+      
+      idx = 0
+      caseids.each do |caseid|
+        a_case = @item.cases[idx]
+        a_case.name = casenames[idx]
+        a_case.save!
+
+        a_case.procedures.build
+        procedure = a_case.procedures[0]
+        procedure.name = procedurenames[idx]
+        procedure.reference = references[idx]
+        procedure.save!
+      end
+      idx = idx + 1
+    end
     render :action => 'edit'
   end
-
 end
