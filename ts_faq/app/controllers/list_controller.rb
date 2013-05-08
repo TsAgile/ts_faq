@@ -64,15 +64,15 @@ class ListController < ApplicationController
     search
   end
   
-  # 保存（delete-insert方式）
+  # 保存（delete-insert方式で追加・更新を一括反映）
   def save
-  
     # 同一トランザクション内で処理
     ActiveRecord::Base.transaction do
     
       # 既存データがあれば削除
       if (params[:itemid] != "") then
-        Item.delete(params[:itemid])
+        @item = Item.find(params[:itemid])
+        @item.destroy
       end
       
       # 項目を登録
@@ -85,22 +85,21 @@ class ListController < ApplicationController
       procedurenames = params[:procedurename]
       references = params[:reference]
 
-      @item.cases.build
-      
       idx = 0
       caseids.each do |caseid|
-        a_case = @item.cases[idx]
+        a_case = @item.cases.build
         a_case.name = casenames[idx]
         a_case.save!
 
-        a_case.procedures.build
-        procedure = a_case.procedures[0]
+        procedure = a_case.procedures.build
         procedure.name = procedurenames[idx]
         procedure.reference = references[idx]
         procedure.save!
+        
+        idx = idx + 1
       end
-      idx = idx + 1
     end
+    
     render :action => 'edit'
   end
 end
