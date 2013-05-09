@@ -6,16 +6,15 @@
 </form>
 
 <p>ケースを追加する場合は「追加」ボタンを押下してください。</p>
-<form action="add" method="post">
+<form action="add" method="get">
   <input name="addButton" type="button" value="追加" onClick="AddTableRows();"/>
 </form>
 
 <p>編集を保存する場合は「保存」ボタンを押下してください。</p>
 <form action="save" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
   <input name="saveButton" type="submit" value="保存">
-
   <p></p>
-
   <table border="1" id="table1">
     <tr>
       <th>ID</th>
@@ -59,10 +58,10 @@ function AddTableRows(){
 	var cell3 = row1.insertCell(2);
 	var cell4 = row1.insertCell(3);
 
-	var HTML1 = '<textarea name="case' + counter + '" rows="20" cols="20"></textarea>';
+	var HTML1 = '<input type="hidden" name="caseid[]" value="99"><textarea name="casename[]" rows="20" cols="20"></textarea>';
 	var HTML2 = '<a href="/list/index/delete">削除</a>';
-	var HTML3 = '<textarea name="procedure' + counter + '" rows="20" cols="60"></textarea>';
-	var HTML4 = '<textarea name="reference' + counter + '" rows="20" cols="60"></textarea>';
+	var HTML3 = '<textarea name="procedurename[]" rows="20" cols="60"></textarea>';
+	var HTML4 = '<textarea name="reference[]" rows="20" cols="60"></textarea>';
 	cell1.innerHTML = HTML1;
 	cell2.innerHTML = HTML2;
 	cell3.innerHTML = HTML3;

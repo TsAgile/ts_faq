@@ -41,7 +41,8 @@
     <td rowspan=<%= count %>><%= item.id %></td>
     <td rowspan=<%= count %>><%= br item.name %></td>
     <td rowspan=<%= count %>><%= item.update_user %></td>
-    <td rowspan=<%= count %>><%= link_to "編集", {:action => 'edit', :id => item.id} %><br><br><%= link_to "削除", {:action => "delete", :id => item.id }, :confirm => "本当に削除してよろしいですか？" %></td>
+    <td rowspan=<%= count %>><%= link_to "編集", {:action => 'edit', :id => item.id} %><br><br>
+    <%= link_to "削除", {:action => "delete", :id => item.id }, :confirm => "「" + item.name + "」を削除します。よろしいですか？" %></td>
     <% item.cases.each do |a_case| %>
       <td><%= br a_case.name %></td>
       <% a_case.procedures.each do |procedure| %>
