@@ -8,32 +8,58 @@ class ListController < ApplicationController
   # キーワード検索
   def search
   
-    # キーワード
-    if(params[:keyWord] == nil) then
-      if(session[:keyWord] == nil) then session[:keyWord] = "" end
+    # キーワードをセッションに保存
+    if(params[:keyWords] == nil) then
+      if(session[:keyWords] == nil) then session[:keyWords] = "" end
     else
-      session[:keyWord] = params[:keyWord]
+      session[:keyWords] = params[:keyWords]
     end
     
-    # 項目の検索
-    @list = Item.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
+    # and/or条件をセッションに保存
+    if(params[:condition] == nil) then
+      if(session[:condition] == nil) then session[:condition] = "and" end
+    else
+      session[:condition] = params[:condition]
+    end
     
-    # ケースの検索
-    @cases = Case.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
-    @cases.each do |a_case|
-      if !(@list.include?(a_case.item)) then
-        @list.push a_case.item
+    # 検索結果のリスト
+    @list = Array.new
+    
+    # キーワードごとに検索
+    keyWords = session[:keyWords].split(",")
+    if(keyWords.size == 0) then keyWords.push "" end
+    
+    idx = 0
+    keyWords.each do |keyWord|
+      # 項目の検索
+      wk_list = Item.find(:all, :conditions => ["name LIKE ?", "%" + keyWord + "%"])
+      
+      # ケースの検索
+      cases = Case.find(:all, :conditions => ["name LIKE ?", "%" + keyWord + "%"])
+      cases.each do |a_case|
+        if !(wk_list.include?(a_case.item)) then wk_list.push a_case.item end
       end
-    end
-    
-    # 手順の検索
-    @procedures = Procedure.find(:all, :conditions => ["name LIKE ?", "%" + session[:keyWord] + "%"])
-    @procedures.each do |procedure|
-      if !(@list.include?(procedure.case.item)) then
-        @list.push procedure.case.item
+
+      # 手順の検索
+      procedures = Procedure.find(:all, :conditions => ["name LIKE ?", "%" + keyWord + "%"])
+      procedures.each do |procedure|
+        if !(wk_list.include?(procedure.case.item)) then wk_list.push procedure.case.item end
       end
+
+      # 検索結果のマージ
+      if(idx == 0) then
+        @list = @list + wk_list
+      else
+        if(session[:condition] == "and") then
+          @list = @list & wk_list
+        else
+          @list = @list | wk_list
+        end
+      end
+      
+      idx = idx + 1
     end
-    
+
     # ソート
     @list.sort!{|a, b| a.id <=> b.id}
     
