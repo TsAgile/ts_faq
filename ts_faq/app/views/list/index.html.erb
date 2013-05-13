@@ -1,12 +1,12 @@
 <h1>こんな時どうする？</h1>
 
-<p>項目を絞りこみたい場合は、キーワードを入力して「検索」ボタンを押下してください。複数のキーワードを指定したい場合は、半角カンマ区切りで入力してand/orを指定してください。</p>
+<p>項目を絞りこみたい場合は、キーワードを入力して「検索」ボタンを押下してください。複数のキーワードを指定したい場合は、スペース区切りで入力してand/orを指定してください。</p>
 
 <form action="search" method="get">
   <table>
     <tr>
       <td>キーワード：</td>
-      <td><input name="keyWords" type="text" value=<%= session[:keyWords] %>></td>
+      <td><input name="keyWords" type="text" value="<%= session[:keyWords] %>"></td>
       <% if(session[:condition] != "or") then %>
         <td><input name="condition" type="radio" value="and" checked>and</td>
         <td><input name="condition" type="radio" value="or">or</td>

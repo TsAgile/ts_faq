@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class ListController < ApplicationController
 
   # 一覧表示
@@ -26,7 +28,7 @@ class ListController < ApplicationController
     @list = Array.new
     
     # キーワードごとに検索
-    keyWords = session[:keyWords].split(",")
+    keyWords = session[:keyWords].gsub(/　/," ").split
     if(keyWords.size == 0) then keyWords.push "" end
     
     idx = 0
@@ -62,7 +64,7 @@ class ListController < ApplicationController
 
     # ソート
     @list.sort!{|a, b| a.id <=> b.id}
-    
+
     render :action => 'index'
   end
   
