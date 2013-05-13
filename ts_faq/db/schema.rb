@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130308053139) do
+ActiveRecord::Schema.define(:version => 20130507064647) do
 
   create_table "cases", :force => true do |t|
     t.integer  "item_id"
@@ -24,7 +24,16 @@ ActiveRecord::Schema.define(:version => 20130308053139) do
 
   create_table "items", :force => true do |t|
     t.string   "name"
-    t.string   "user"
+    t.string   "update_user"
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+    t.integer  "lock_version", :default => 0
+  end
+
+  create_table "procedures", :force => true do |t|
+    t.integer  "case_id"
+    t.string   "name"
+    t.string   "reference"
     t.datetime "created_at",                  :null => false
     t.datetime "updated_at",                  :null => false
     t.integer  "lock_version", :default => 0
