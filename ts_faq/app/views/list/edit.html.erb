@@ -31,9 +31,9 @@
     <td rowspan=<%= count %> valign="top"><textarea name="item" rows="20" cols="20"><%= @item.name %></textarea></td>
     <td rowspan=<%= count %> valign="top"><textarea name="update_user" rows="20" cols="5"><%= @item.update_user %></textarea></td>
     <% @item.cases.each do |a_case| %>
-      <input type="hidden" name="caseid[]" value="<%= a_case.id %>">
       <td valign="top"><textarea name="casename[]" rows="20" cols="20"><%= a_case.name %></textarea></td>
-      <td valign="top"><%= link_to "削除", {:action => 'delete', :id => a_case.id} %></td>
+      <td valign="top"><a href="javascript:void(0);" onclick="DelTableRows(this);">削除</a></td>
+      <input type="hidden" name="caseid[]" value="<%= a_case.id %>">
       <% a_case.procedures.each do |procedure| %>
         <td><textarea name="procedurename[]" rows="20" cols="60"><%= procedure.name %></textarea></td>
         <td><textarea name="reference[]" rows="20" cols="60"><%= procedure.reference %></textarea></td>
@@ -59,7 +59,7 @@ function AddTableRows(){
 	var cell4 = row1.insertCell(3);
 
 	var HTML1 = '<input type="hidden" name="caseid[]" value="99"><textarea name="casename[]" rows="20" cols="20"></textarea>';
-	var HTML2 = '<a href="/list/index/delete">削除</a>';
+	var HTML2 = '<a href="javascript:void(0);" onclick="DelTableRows(this);">削除</a>';
 	var HTML3 = '<textarea name="procedurename[]" rows="20" cols="60"></textarea>';
 	var HTML4 = '<textarea name="reference[]" rows="20" cols="60"></textarea>';
 	cell1.innerHTML = HTML1;
@@ -79,5 +79,64 @@ function AddTableRows(){
 
 	// セル配置
 	cell2.vAlign = "top"
+}
+
+function DelTableRows(o){
+
+	var table1 = document.getElementById("table1");
+    var tr = o.parentNode.parentNode;
+    //2件以上ある場合
+	if (table1.rows.length > 2) {
+      //1行目の場合
+      if (tr.sectionRowIndex == 1 ){
+		//ID、項目名、登録者を保存
+        var HTML1 = tr.cells[0].innerHTML;
+        var HTML2 = tr.cells[1].innerHTML;
+        var HTML3 = tr.cells[2].innerHTML;
+        
+        // 行削除
+        table1.deleteRow(tr.sectionRowIndex);
+       
+        // 1行目にセル追加
+        var row1 = table1.rows[1]
+        var cell1 = row1.insertCell(0);
+		var cell2 = row1.insertCell(1);
+		var cell3 = row1.insertCell(2);
+		
+		// セルに値をセット
+		cell1.innerHTML = HTML1;
+		cell2.innerHTML = HTML2;
+		cell3.innerHTML = HTML3;
+        
+        // セル結合       
+		var row = table1.getElementsByTagName("tr")[1];
+		var col1 = row.getElementsByTagName("td")[0];
+		var col2 = row.getElementsByTagName("td")[1];
+		var col3 = row.getElementsByTagName("td")[2];
+		col1.rowSpan = (table1.rows.length - 1);
+		col2.rowSpan = (table1.rows.length - 1);
+		col3.rowSpan = (table1.rows.length - 1);
+		
+		// セル配置
+		cell1.vAlign = "top"
+		cell2.vAlign = "top"
+		cell3.vAlign = "top"
+
+      } else {
+      // 1行目以外の場合
+        // 行削除
+        table1.deleteRow(tr.sectionRowIndex);
+      }
+    
+    //最後の1件の場合
+    } else {
+      // データクリア
+      var cell4 = tr.cells.item(3); //ケース名
+      cell4.innerHTML = '<textarea name="casename[]" rows="20" cols="20"></textarea>';
+      var cell6 = tr.cells.item(5); //手順
+      cell6.innerHTML = '<textarea name="procedurename[]" rows="20" cols="60"></textarea>';
+      var cell7 = tr.cells.item(6); //参照情報
+      cell7.innerHTML = '<textarea name="reference[]" rows="20" cols="60"></textarea>';
+    } 
 }
 </script>
