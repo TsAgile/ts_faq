@@ -27,7 +27,7 @@
     </tr>
     <% count = @item.cases.length %>
     <tr>
-    <td rowspan=<%= count %> valign="top"><%= @item.id %><input type="hidden" name="itemid" value="<%= @item.id %>"></td>
+    <td rowspan=<%= count %> valign="top"><%= @item.id %><input type="hidden" name="itemid" value="<%= @item.id %>"><input type="hidden" name="updated_at" value="<%= @item.updated_at %>"></td>
     <td rowspan=<%= count %> valign="top"><textarea name="item" rows="20" cols="20"><%= @item.name %></textarea></td>
     <td rowspan=<%= count %> valign="top"><textarea name="update_user" rows="20" cols="5"><%= @item.update_user %></textarea></td>
     <% @item.cases.each do |a_case| %>

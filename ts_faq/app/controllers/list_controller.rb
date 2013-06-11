@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'kconv'
+
 class ListController < ApplicationController
 
   # 一覧表示
@@ -100,6 +102,12 @@ class ListController < ApplicationController
       # 既存データがあれば削除
       if (params[:itemid] != "") then
         @item = Item.find(params[:itemid])
+        
+        # 排他チェック
+        if(params[:updated_at] != @item.updated_at.to_s) then
+          raise "このデータを他の人が先に更新しています。最初からやり直してください。"
+        end
+        
         @item.destroy
       end
       
@@ -129,5 +137,92 @@ class ListController < ApplicationController
     end
     
     render :action => 'edit'
+  end
+  
+  # エクスポート
+  def export
+    
+    # 指定されたテーブルに応じてエクスポート処理
+    case params[:table]
+    # 「項目」の場合
+    when "items" then
+      items = Item.all
+      data = CSV.generate do |csv|
+        csv << ["id", "name", "update_user"]
+        items.each do |item|
+          csv << [item.id, item.name, item.update_user]
+        end
+      end
+      send_data(data, type: 'text/csv', filename: "items_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
+    
+    # 「ケース」の場合
+    when "cases" then
+      cases = Case.all
+      data = CSV.generate do |csv|
+        csv << ["id", "item_id", "name"]
+        cases.each do |a_case|
+          csv << [a_case.id, a_case.item_id, a_case.name]
+        end
+      end
+      send_data(data, type: 'text/csv', filename: "cases_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
+    
+    # 「手順」の場合
+    when "procedures" then
+      procedures = Procedure.all
+      data = CSV.generate do |csv|
+        csv << ["id", "case_id", "name", "reference"]
+        procedures.each do |procedure|
+          csv << [procedure.id, procedure.case_id, procedure.name, procedure.reference]
+        end
+      end
+      send_data(data, type: 'text/csv', filename: "procedures_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
+    end
+  end
+  
+  # インポート
+  def import
+    # 同一トランザクション内で処理
+    ActiveRecord::Base.transaction do
+      
+      # 指定されたテーブルに応じてインポート処理（文字コードはUTF-8で）
+      case params[:table]
+      # 「項目」の場合
+      when "items" then
+        reader = Kconv.toutf8(params[:attachment].read)
+        CSV.parse(reader, headers: true) do |row|
+          item = Item.find_by_id(row.to_hash['id'])
+          if(item.nil?) then
+            Item.create! row.to_hash
+          else
+            item.update_attributes row.to_hash
+          end
+        end
+      
+      # 「ケース」の場合
+      when "cases" then
+        reader = Kconv.toutf8(params[:attachment].read)
+        CSV.parse(reader, headers: true) do |row|
+          a_case = Case.find_by_id(row.to_hash['id'])
+          if(a_case.nil?) then
+            Case.create! row.to_hash
+          else
+            a_case.update_attributes row.to_hash
+          end
+        end
+      
+      # 「手順」の場合
+      when "procedures" then
+        reader = Kconv.toutf8(params[:attachment].read)
+        CSV.parse(reader, headers: true) do |row|
+          procedure = Procedure.find_by_id(row.to_hash['id'])
+          if(procedure.nil?) then
+            Procedure.create! row.to_hash
+          else
+            procedure.update_attributes row.to_hash
+          end
+        end
+      end
+      search
+    end
   end
 end
