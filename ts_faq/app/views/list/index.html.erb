@@ -81,21 +81,23 @@
   </table>
 <p></p>
 
-<p>データ全件をファイルからインポートしたい場合は、対象テーブルとファイルを指定して「インポート」ボタンを押下してください。</p>
+<p>データ全件をファイルから取り込みたい場合は、テーブルごとにファイルを指定して「インポート」ボタンを押下してください。</p>
   <table>
     <tr>
-      <td>
-        <%= form_tag(action="import", :multipart => true) do %>
-          <select name="table">
-          <option value="items">項目</option>
-          <option value="cases">ケース</option>
-          <option value="procedures">手順</option>
-          </select>
-          <input name="attachment" type="file" />
-          <input type="submit" value="インポート"/>
-        <% end %>
-      </td>
+      <td>項目</td>
+      <%= form_tag(action="import", :multipart => true) do %>
+      <td><input type="file" name="item_file"></td>
     </tr>
+    <tr>
+      <td>ケース</td>
+      <td><input type="file" name="case_file"/></td>
+    </tr>
+    <tr>
+      <td>手順</td>
+      <td><input type="file" name="procedure_file"/></td>
+      <td><input type="submit" value="インポート"/></td>
+    </tr>
+    <% end %>
   </table>
 <p></p>
 

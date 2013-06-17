@@ -1,5 +1,11 @@
 <h1>こんな時どうする？の編集</h1>
 
+<% if @item.errors.size > 0 %>
+  <% @item.errors.full_messages.each do |msg| %>
+    <font color="#ffffff" size="6"><span style="background-color: #ff0000"><%= msg %></span></font>
+  <% end %>
+<% end %>
+
 <p>検索画面へ戻る場合は「戻る」ボタンを押下してください。</p>
 <form action="search" method="get">
   <input name="backButton" type="submit" value="戻る">

@@ -105,7 +105,9 @@ class ListController < ApplicationController
         
         # 排他チェック
         if(params[:updated_at] != @item.updated_at.to_s) then
-          raise "このデータを他の人が先に更新しています。最初からやり直してください。"
+          @item.errors.add(:排他エラー：, "このデータを他の人が先に更新していました。編集をやり直してください。")
+          render :action => 'edit'
+          return
         end
         
         @item.destroy
@@ -184,45 +186,27 @@ class ListController < ApplicationController
     # 同一トランザクション内で処理
     ActiveRecord::Base.transaction do
       
-      # 指定されたテーブルに応じてインポート処理（文字コードはUTF-8で）
-      case params[:table]
-      # 「項目」の場合
-      when "items" then
-        reader = Kconv.toutf8(params[:attachment].read)
-        CSV.parse(reader, headers: true) do |row|
-          item = Item.find_by_id(row.to_hash['id'])
-          if(item.nil?) then
-            Item.create! row.to_hash
-          else
-            item.update_attributes row.to_hash
-          end
-        end
+      # 全件削除
+      Item.destroy_all
       
-      # 「ケース」の場合
-      when "cases" then
-        reader = Kconv.toutf8(params[:attachment].read)
-        CSV.parse(reader, headers: true) do |row|
-          a_case = Case.find_by_id(row.to_hash['id'])
-          if(a_case.nil?) then
-            Case.create! row.to_hash
-          else
-            a_case.update_attributes row.to_hash
-          end
-        end
-      
-      # 「手順」の場合
-      when "procedures" then
-        reader = Kconv.toutf8(params[:attachment].read)
-        CSV.parse(reader, headers: true) do |row|
-          procedure = Procedure.find_by_id(row.to_hash['id'])
-          if(procedure.nil?) then
-            Procedure.create! row.to_hash
-          else
-            procedure.update_attributes row.to_hash
-          end
-        end
+      # 「項目」テーブル
+      reader = Kconv.toutf8(params[:item_file].read)
+      CSV.parse(reader, headers: true) do |row|
+        Item.create! row.to_hash
       end
-      search
+      
+      # 「ケース」テーブル
+      reader = Kconv.toutf8(params[:case_file].read)
+      CSV.parse(reader, headers: true) do |row|
+        Case.create! row.to_hash
+      end
+      
+      # 「手順」テーブル
+      reader = Kconv.toutf8(params[:procedure_file].read)
+      CSV.parse(reader, headers: true) do |row|
+        Procedure.create! row.to_hash
+      end
     end
+    search
   end
 end
