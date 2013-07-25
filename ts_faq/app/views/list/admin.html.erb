@@ -1,0 +1,42 @@
+<p class="itemTitleBlue">こんなときどうする？　管理者向けメニュー</p>
+
+<%= render 'message' %>
+
+<p>データ全件をファイル出力したい場合は、対象テーブルを指定して「エクスポート」ボタンを押下してください。</p>
+  <table>
+    <tr>
+      <td>
+        <form action="export" method="get">
+          <select name="table">
+          <option value="items">項目</option>
+          <option value="cases">ケース</option>
+          <option value="procedures">手順</option>
+          </select>
+      </td>
+      <td>
+          <input name="exportButton" type="submit" value="エクスポート">
+        </form>
+      </td>
+  </table>
+<p></p>
+
+<p>データ全件をファイルから取り込みたい場合は、テーブルごとにファイルを指定して「インポート」ボタンを押下してください。</p>
+  <table>
+    <tr>
+      <td>項目</td>
+      <%= form_tag(action="import", :multipart => true) do %>
+      <td><%= file_field_tag("item_file",  { :size => 50}) %></td>
+    </tr>
+    <tr>
+      <td>ケース</td>
+      <td><%= file_field_tag("case_file", { :size => 50}) %></td>
+    </tr>
+    <tr>
+      <td>手順</td>
+      <td><%= file_field_tag("procedure_file", { :size => 50}) %></td>
+      <td><%= submit_tag "インポート" , :onclick => "return CheckSelectFile()" %></td>
+    </tr>
+    <% end %>
+  </table>
+<p></p>
+

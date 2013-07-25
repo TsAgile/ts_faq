@@ -1,27 +1,32 @@
-<h1>こんな時どうする？の編集</h1>
+<p class="itemTitleBlue">こんなときどうする？　編集画面</p>
+
+<%= render 'message' %>
 
 <% if @item.errors.size > 0 %>
   <% @item.errors.full_messages.each do |msg| %>
-    <font color="#ffffff" size="6"><span style="background-color: #ff0000"><%= msg %></span></font>
+    <p id="alert"><%= msg %></p>
   <% end %>
 <% end %>
 
 <p>検索画面へ戻る場合は「戻る」ボタンを押下してください。</p>
-<form action="search" method="get">
-  <input name="backButton" type="submit" value="戻る">
-</form>
+<%= button_to '戻る', :action => 'search' %>
 
 <p>ケースを追加する場合は「追加」ボタンを押下してください。</p>
-<form action="add" method="get">
-  <input name="addButton" type="button" value="追加" onClick="AddTableRows();"/>
-</form>
+<%= button_to_function '追加', onClick="AddTableRows()" %>
 
 <p>編集を保存する場合は「保存」ボタンを押下してください。</p>
-<form action="save" method="post">
+<%= form_tag( :action => 'save' ) do %>
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-  <input name="saveButton" type="submit" value="保存">
+  <%= submit_tag "保存" %>
   <p></p>
-  <table border="1" id="table1">
+  <table id="listTable" class="listTable">
+  <col class="idCol">
+  <col class="itemCol">
+  <col class="update_userCol">
+  <col class="caseCol">
+  <col class="changeCol">
+  <col class="procedureCol">
+  <col class="referenceCol">
     <tr>
       <th>ID</th>
       <th>項目</th>
@@ -29,120 +34,26 @@
       <th>ケース</th>
       <th>変更</th>
       <th>手順</th>
-      <th>参照情報</th>
+      <th>参照情報 &nbsp;&nbsp;<%= link_to FILE_SERVER_PATH do %><%= image_tag("/assets/folder.png", :alt => '参考資料') %>参考資料フォルダを開く<% end %></th>
     </tr>
     <% count = @item.cases.length %>
     <tr>
-    <td rowspan=<%= count %> valign="top"><%= @item.id %><input type="hidden" name="itemid" value="<%= @item.id %>"><input type="hidden" name="updated_at" value="<%= @item.updated_at %>"></td>
-    <td rowspan=<%= count %> valign="top"><textarea name="item" rows="20" cols="20"><%= @item.name %></textarea></td>
-    <td rowspan=<%= count %> valign="top"><textarea name="update_user" rows="20" cols="5"><%= @item.update_user %></textarea></td>
-    <% @item.cases.each do |a_case| %>
-      <td valign="top"><textarea name="casename[]" rows="20" cols="20"><%= a_case.name %></textarea></td>
-      <td valign="top"><a href="javascript:void(0);" onclick="DelTableRows(this);">削除</a></td>
-      <input type="hidden" name="caseid[]" value="<%= a_case.id %>">
-      <% a_case.procedures.each do |procedure| %>
-        <td><textarea name="procedurename[]" rows="20" cols="60"><%= procedure.name %></textarea></td>
-        <td><textarea name="reference[]" rows="20" cols="60"><%= procedure.reference %></textarea></td>
-      <% end %>
+      <td rowspan=<%= count %>><%= @item.id %>
+                               <%= hidden_field_tag("itemid", @item.id) %>
+                               <%= hidden_field_tag("updated_at", @item.updated_at) %>
+                               <%= hidden_field_tag("itemid", @item.id) %></td>
+      <td rowspan=<%= count %>><%= text_area_tag("item", @item.name ) %></td>
+      <td rowspan=<%= count %>><%= text_area_tag("update_user", @item.update_user ) %></td>
+      <% @item.cases.each do |a_case| %>
+        <td><%= text_area_tag("casename[]", a_case.name ) %></td>
+        <td><%= link_to_function '削除', onClick="DelTableRows(this)" , { :id => "delete" } %></td>
+        <%= hidden_field_tag("caseid[]", a_case.id ) %>
+        <% a_case.procedures.each do |procedure| %>
+          <td><%= text_area_tag("procedurename[]", procedure.name ) %></td>
+          <td><%= text_area_tag("reference[]", procedure.reference ) %></td>
+        <% end %>
       </tr>
-    <% end %>
+      <% end %>
     </tr>
   </table>
-</form>
-
-<script type="text/javascript">
-var counter = 0;
-function AddTableRows(){
-	// カウンタを回す
-	counter++;
-
-	// 行追加
-	var table1 = document.getElementById("table1");
-	var row1 = table1.insertRow(-1);
-	var cell1 = row1.insertCell(0);
-	var cell2 = row1.insertCell(1);
-	var cell3 = row1.insertCell(2);
-	var cell4 = row1.insertCell(3);
-
-	var HTML1 = '<input type="hidden" name="caseid[]" value="99"><textarea name="casename[]" rows="20" cols="20"></textarea>';
-	var HTML2 = '<a href="javascript:void(0);" onclick="DelTableRows(this);">削除</a>';
-	var HTML3 = '<textarea name="procedurename[]" rows="20" cols="60"></textarea>';
-	var HTML4 = '<textarea name="reference[]" rows="20" cols="60"></textarea>';
-	cell1.innerHTML = HTML1;
-	cell2.innerHTML = HTML2;
-	cell3.innerHTML = HTML3;
-	cell4.innerHTML = HTML4;
-	
-	// セル結合
-	var row = table1.getElementsByTagName("tr")[1];
-	var col1 = row.getElementsByTagName("td")[0];
-	var col2 = row.getElementsByTagName("td")[1];
-	var col3 = row.getElementsByTagName("td")[2];
-	currRowSpan = col1.getAttribute("rowspan");
-	col1.rowSpan = (currRowSpan + 1);
-	col2.rowSpan = (currRowSpan + 1);
-	col3.rowSpan = (currRowSpan + 1);
-
-	// セル配置
-	cell2.vAlign = "top"
-}
-
-function DelTableRows(o){
-
-	var table1 = document.getElementById("table1");
-    var tr = o.parentNode.parentNode;
-    //2件以上ある場合
-	if (table1.rows.length > 2) {
-      //1行目の場合
-      if (tr.sectionRowIndex == 1 ){
-		//ID、項目名、登録者を保存
-        var HTML1 = tr.cells[0].innerHTML;
-        var HTML2 = tr.cells[1].innerHTML;
-        var HTML3 = tr.cells[2].innerHTML;
-        
-        // 行削除
-        table1.deleteRow(tr.sectionRowIndex);
-       
-        // 1行目にセル追加
-        var row1 = table1.rows[1]
-        var cell1 = row1.insertCell(0);
-		var cell2 = row1.insertCell(1);
-		var cell3 = row1.insertCell(2);
-		
-		// セルに値をセット
-		cell1.innerHTML = HTML1;
-		cell2.innerHTML = HTML2;
-		cell3.innerHTML = HTML3;
-        
-        // セル結合       
-		var row = table1.getElementsByTagName("tr")[1];
-		var col1 = row.getElementsByTagName("td")[0];
-		var col2 = row.getElementsByTagName("td")[1];
-		var col3 = row.getElementsByTagName("td")[2];
-		col1.rowSpan = (table1.rows.length - 1);
-		col2.rowSpan = (table1.rows.length - 1);
-		col3.rowSpan = (table1.rows.length - 1);
-		
-		// セル配置
-		cell1.vAlign = "top"
-		cell2.vAlign = "top"
-		cell3.vAlign = "top"
-
-      } else {
-      // 1行目以外の場合
-        // 行削除
-        table1.deleteRow(tr.sectionRowIndex);
-      }
-    
-    //最後の1件の場合
-    } else {
-      // データクリア
-      var cell4 = tr.cells.item(3); //ケース名
-      cell4.innerHTML = '<textarea name="casename[]" rows="20" cols="20"></textarea>';
-      var cell6 = tr.cells.item(5); //手順
-      cell6.innerHTML = '<textarea name="procedurename[]" rows="20" cols="60"></textarea>';
-      var cell7 = tr.cells.item(6); //参照情報
-      cell7.innerHTML = '<textarea name="reference[]" rows="20" cols="60"></textarea>';
-    } 
-}
-</script>
+<% end %>

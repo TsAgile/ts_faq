@@ -66,7 +66,13 @@ class ListController < ApplicationController
 
     # ソート
     @list.sort!{|a, b| a.id <=> b.id}
+    
+    # 検索結果が0件の場合
+    if(@list.size) == 0 then
+      flash.now[:notice] = NOTICE_NOT_FOUND
+    end
 
+    # 一覧画面表示
     render :action => 'index'
   end
   
@@ -75,22 +81,38 @@ class ListController < ApplicationController
     @item = Item.new()
     @item.cases.build
     @item.cases[0].procedures.build
+
+    # 編集画面表示
     render :action => 'edit'
   end
 
   # 編集
   def edit
-    @item = Item.find(params[:id])
-    render :action => 'edit'
+    if Item.exists?(:id => params[:id]) then
+      @item = Item.find(params[:id])
+      # 編集画面表示
+      render :action => 'edit'
+    else
+      # 存在しない場合、エラーメッセージ
+      flash.now[:alert] = ALERT_ALREADY_DELETED 
+      # 再検索
+      search
+    end
   end
 
   
   # 削除
   def delete
-    @item = Item.find(params[:id])
-    if !(@item.nil?) then
+    if Item.exists?(:id => params[:id]) then
+      @item = Item.find(params[:id])
       @item.destroy
+      flash.now[:notice] = NOTICE_DELETE_COMPLETED
+    else
+      # 存在しない場合、エラーメッセージ
+      flash.now[:alert] = ALERT_ALREADY_DELETED
     end
+    
+    # 検索処理
     search
   end
   
@@ -100,17 +122,24 @@ class ListController < ApplicationController
     ActiveRecord::Base.transaction do
     
       # 既存データがあれば削除
-      if (params[:itemid] != "") then
+      if Item.exists?(:id => params[:id]) then
         @item = Item.find(params[:itemid])
         
         # 排他チェック
-        if(params[:updated_at] != @item.updated_at.to_s) then
-          @item.errors.add(:排他エラー：, "このデータを他の人が先に更新していました。編集をやり直してください。")
+        if (params[:updated_at] != @item.updated_at.to_s) then
+          @item.errors.add(ALERT_CANCEL, '')
+          # 編集画面表示
           render :action => 'edit'
           return
         end
         
         @item.destroy
+      else
+        # 存在しない場合、エラーメッセージ
+        flash.now[:alert] = ALERT_ALREADY_DELETED
+        # 再検索
+        search
+        return
       end
       
       # 項目を登録
@@ -138,6 +167,10 @@ class ListController < ApplicationController
       end
     end
     
+    # 処理完了メッセージ
+    flash.now[:notice] = NOTICE_SAVE_COMPLETED
+    
+    # 編集画面表示
     render :action => 'edit'
   end
   
@@ -179,15 +212,34 @@ class ListController < ApplicationController
       end
       send_data(data, type: 'text/csv', filename: "procedures_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
     end
+    
+    # 処理完了メッセージ
+    
   end
   
   # インポート
   def import
+    
+    # 全てのファイルが選択されていない場合
+    if(params[:item_file].blank?  || 
+       params[:case_file].blank?  ||  
+       params[:procedure_file].blank?) then
+
+      # メッセージ表示
+      flash.now[:alert] = ALERT_IMPORT_FILE
+
+      # 管理者画面表示
+      render :action => 'admin'
+      return
+    end
+
     # 同一トランザクション内で処理
     ActiveRecord::Base.transaction do
       
       # 全件削除
       Item.destroy_all
+      Case.destroy_all
+      Procedure.destroy_all
       
       # 「項目」テーブル
       reader = Kconv.toutf8(params[:item_file].read)
@@ -206,7 +258,11 @@ class ListController < ApplicationController
       CSV.parse(reader, headers: true) do |row|
         Procedure.create! row.to_hash
       end
+      
+      # 処理完了メッセージ
+      flash.now[:notice] = NOTICE_IMPORT_COMPLETED
+      render :action => 'admin'
     end
-    search
+
   end
 end
