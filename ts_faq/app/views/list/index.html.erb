@@ -1,38 +1,44 @@
-<h1>こんな時どうする？</h1>
+<p class="itemTitleBlue">こんなときどうする？　検索画面</p>
+
+<%= render 'message' %>
 
 <p>項目を絞りこみたい場合は、キーワードを入力して「検索」ボタンを押下してください。複数のキーワードを指定したい場合は、スペース区切りで入力してand/orを指定してください。</p>
-
-<form action="search" method="get">
+<%= form_tag({:action => 'search'} , {:method=>"get"} ) do %>
   <table>
     <tr>
       <td>キーワード：</td>
-      <td><input name="keyWords" type="text" value="<%= session[:keyWords] %>"></td>
+      <td><%= text_field_tag("keyWords", session[:keyWords] ) %></td>
       <% if(session[:condition] != "or") then %>
-        <td><input name="condition" type="radio" value="and" checked>and</td>
-        <td><input name="condition" type="radio" value="or">or</td>
+        <td><%= radio_button_tag("condition" , "and" , true) %>and</td>
+        <td><%= radio_button_tag("condition" , "or" ) %>or</td>
       <% else %>
-        <td><input name="condition" type="radio" value="and">and</td>
-        <td><input name="condition" type="radio" value="or" checked>or</td>
+        <td><%= radio_button_tag("condition" , "and" ) %>and</td>
+        <td><%= radio_button_tag("condition" , "or" , true) %>or</td>
       <% end %>
-      <td><input name="searchButton" type="submit" value="検索"></td>
+      <td><%= submit_tag "検索" %></td>
     </tr>
   </table>
-</form>
+<% end %>
 
 <p></p>
 
 <p>項目を新規追加したい場合は、「追加」ボタンを押下してください。編集、削除したい場合は、各項目の「変更」欄のリンクをクリックしてください。</p>
-<form action="add" method="get">
-  <table>
-    <tr>
-      <td><input name="addButton" type="submit" value="追加"></td>
-    </tr>
-  </table>
-</form>
+<%= button_to "追加", {:action => 'add'} %>
+
+<p>VPN接続の場合は、ターミナルサーバー(MetaFrame)より以下のフォルダを開いてください。お気に入りに登録しておくと次回よりスムーズに開けます。</p>
+<div class="enclosed"><%= FILE_SERVER_PATH %></div>
+
 
 <p></p>
 
-<table border="1">
+<table class="listTable">
+  <col class="idCol">
+  <col class="itemCol">
+  <col class="update_userCol">
+  <col class="changeCol">
+  <col class="caseCol;">
+  <col class="procedureCol">
+  <col class="referenceCol">
   <tr>
     <th>ID</th>
     <th>項目</th>
@@ -40,64 +46,25 @@
     <th>変更</th>
     <th>ケース</th>
     <th>手順</th>
-    <th>参照情報</th>
+    <th>参照情報 &nbsp;&nbsp;<%= link_to FILE_SERVER_PATH do %><%= image_tag("/assets/folder.png", :alt => '参考資料') %>参考資料フォルダを開く<% end %></th>
   </tr>
   <% @list.each do |item| %>
     <% count = item.cases.length %>
     <tr>
     <td rowspan=<%= count %>><%= item.id %></td>
-    <td rowspan=<%= count %>><%= br item.name %></td>
+    <td rowspan=<%= count %>><%= item.name %></td>
     <td rowspan=<%= count %>><%= item.update_user %></td>
     <td rowspan=<%= count %>><%= link_to "編集", {:action => 'edit', :id => item.id} %><br><br>
     <%= link_to "削除", {:action => "delete", :id => item.id }, :confirm => "「" + item.name + "」を削除します。よろしいですか？" %></td>
     <% item.cases.each do |a_case| %>
-      <td><%= br a_case.name %></td>
+      <td><%= a_case.name %></td>
       <% a_case.procedures.each do |procedure| %>
         <td><%= auto_link((br procedure.name), :html => { :target => "_blank" }) %></td>
         <td><%= auto_link((br procedure.reference), :html => { :target => "_blank" }) %></td>
       <% end %>
-      </tr>
+    </tr>
     <% end %>
   <% end %>
   </tr>
 </table>
-
-<p>【管理者向けメニュー】</p>
-<p>データ全件をファイル出力したい場合は、対象テーブルを指定して「エクスポート」ボタンを押下してください。</p>
-  <table>
-    <tr>
-      <td>
-        <form action="export" method="get">
-          <select name="table">
-          <option value="items">項目</option>
-          <option value="cases">ケース</option>
-          <option value="procedures">手順</option>
-          </select>
-      </td>
-      <td>
-          <input name="exportButton" type="submit" value="エクスポート">
-        </form>
-      </td>
-  </table>
-<p></p>
-
-<p>データ全件をファイルから取り込みたい場合は、テーブルごとにファイルを指定して「インポート」ボタンを押下してください。</p>
-  <table>
-    <tr>
-      <td>項目</td>
-      <%= form_tag(action="import", :multipart => true) do %>
-      <td><input type="file" name="item_file"></td>
-    </tr>
-    <tr>
-      <td>ケース</td>
-      <td><input type="file" name="case_file"/></td>
-    </tr>
-    <tr>
-      <td>手順</td>
-      <td><input type="file" name="procedure_file"/></td>
-      <td><input type="submit" value="インポート"/></td>
-    </tr>
-    <% end %>
-  </table>
-<p></p>
 
