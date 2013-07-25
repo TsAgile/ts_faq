@@ -3,8 +3,6 @@ class CreateCases < ActiveRecord::Migration
     create_table :cases do |t|
       t.integer :item_id
       t.string :name
-      t.string :user
-      t.integer :lock_version, :default => 0
 
       t.timestamps
     end

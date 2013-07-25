@@ -5,17 +5,22 @@ TsFaq::Application.configure do
   # test suite. You never need to work with it otherwise. Remember that
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs. Don't rely on the data there!
+  # アプリケーションクラスのリロードをするかの設定
   config.cache_classes = true
 
   # Configure static asset server for tests with Cache-Control for performance
+  # assetsの静的ファイルの設定
   config.serve_static_assets = true
   config.static_cache_control = "public, max-age=3600"
 
+  # 初期化されていないオブジェクトの警告
   # Log error messages when you accidentally call methods on nil
   config.whiny_nils = true
 
   # Show full error reports and disable caching
+  # エラー情報をブラウザに表示をするかの設定（開発のデフォルトはtrue）
   config.consider_all_requests_local       = true
+  # コントローラのキャッシュ設定をするかの設定
   config.action_controller.perform_caching = false
 
   # Raise exceptions instead of rendering exception templates

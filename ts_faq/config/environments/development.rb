@@ -1,18 +1,23 @@
 TsFaq::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
+  # アプリケーションクラスのリロードをするかの設定
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
+  # 初期化されていないオブジェクトの警告
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
 
   # Show full error reports and disable caching
+  # エラー情報をブラウザに表示をするかの設定（開発のデフォルトはtrue）
   config.consider_all_requests_local       = true
+  # コントローラのキャッシュ設定をするかの設定
   config.action_controller.perform_caching = false
 
+  # 電子メールが配信完了できない場合にエラーを発生させるかの設定
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
 
@@ -32,6 +37,7 @@ TsFaq::Application.configure do
   # Do not compress assets
   config.assets.compress = false
 
+  # Assetの結合と圧縮の設定
   # Expands the lines which load the assets
   config.assets.debug = true
 end

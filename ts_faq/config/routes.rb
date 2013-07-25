@@ -1,8 +1,30 @@
 TsFaq::Application.routes.draw do
-  get "list/index"
 
-  get "list/init"
+  # 一覧画面
+  match 'list/index'
+  # 検索
+  match 'list/search'
+  # 項目追加
+  match 'list/add'
+  # 項目削除
+  match 'list/delete'
+  
+  # 編集画面
+  match 'list/:id/edit' => 'list#edit'
+  # 保存（編集時）
+  match 'list/:id/save' => 'list#save'
+  # 保存（新規追加時）
+  match 'list/save'
 
+  # 管理者画面
+  match 'list/admin'
+  # エクスポート
+  match 'list/export'
+  # インポート
+  match 'list/import'
+  
+  
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -60,13 +82,6 @@ TsFaq::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id))(.:format)'
   
-  match 'list/index/index' => 'list#index'
-  match 'list/index/search' => 'list#search'
-  match 'list/index/add' => 'list#add'
-  match 'list/index/edit' => 'list#edit'
-  match 'list/index/delete' => 'list#delete'
-  match 'list/index/save' => 'list#save'
-  match 'list/index/export' => 'list#export'
-  match 'list/index/import' => 'list#import'
+
 
 end

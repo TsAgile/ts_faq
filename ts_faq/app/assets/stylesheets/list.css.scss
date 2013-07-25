@@ -1,3 +1,210 @@
-// Place all the styles related to the list controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+/*-----------------------------------------------*/
+/* initialize */
+/*-----------------------------------------------*/
+html {
+  overflow-y: scroll;
+}
+
+table, td, th {
+  border: none;
+  vertical-align: top;
+}
+
+textarea {
+  padding: 1px 0 1px 0;
+}
+
+
+ul, li {
+  list-style-type: none;
+}
+
+img, a img {
+  border: none;
+  vertical-align: bottom;
+}
+
+body {
+  background-color: #fff;
+  color: #333;
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+p, ol, ul, td {
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/*-----------------------------------------------*/
+/* font-family, font-size (まとめて記述) */
+/*-----------------------------------------------*/
+
+body, th, td, form, div, span, p {
+  font-family: "ＭＳ Ｐゴシック";
+  font-size: 10pt;
+}
+
+input, textarea, select {
+  font-family: "ＭＳ Ｐゴシック";
+  font-size: 9pt;
+}
+
+.footer {
+  font-family: "verdana, arial";
+  font-size: 7pt;
+}
+
+/*---------- テーブル（背景：白） ----------*/
+.listTable {
+  margin: 2px 10px 2px 10px;
+  border-collapse:collapse;
+  border: 1px solid #CCCCCC;
+  table-layout:fixed;
+  width:98%;
+}
+  .listTable th {
+    margin: 0px;
+    padding: 4px 1px 3px 3px;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    background-color: #EEEEEE;
+  }
+  .listTable td {
+    margin: 0px;
+    padding: 4px 1px 3px 3px;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    background-color: #FFFFFF;
+    word-wrap:break-word;
+  }
+  .listTable input {
+    margin: 0px;
+    padding: 1px;
+  }
+  .listTable textarea {
+    width:95%;
+    height: 200px;
+  }
+  .idCol {
+   width:2%;
+  }
+  .itemCol {
+   width:13%;
+  }
+  .update_userCol {
+   width:5%;
+  }
+  .changeCol {
+   width:3%;
+  }
+  .caseCol {
+   width:15%;
+  }
+  .procedureCol {
+   width:30%;
+  }
+  .referenceCol {
+   width:30%;
+  }
+  
+  
+/*---------- 項目タイトル ----------*/
+.itemTitleBlue {
+  margin: 10px 0 6px 0;
+  padding: 4px 10px 2px 3px;
+  border-left: 4px solid #006699;
+  border-right: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
+  background: #EEEEEE;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.itemTitleRed {
+  margin: 10px 0 6px 0;
+  padding: 4px 10px 2px 3px;
+  border-left: 4px solid #CC3300;
+  border-right: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
+  background: #EEEEEE;
+} 
+
+/*---------- 非強調文字 ----------*/
+.weak {
+  color: #999999;
+}
+
+/*---------- 囲み ----------*/
+.enclosed {
+  height: auto;
+  /* overflow-y: scroll; */
+  margin: 0px 20px 0 20px;
+  padding: 5px 5px 5px 5px;
+  border: 1px solid #CCCCCC;
+  background-color: #FFFFFF;
+}
+
+pre {
+  background-color: #eee;
+  padding: 10px;
+  font-size: 11px;
+}
+
+div {
+  &.field, &.actions {
+    margin-bottom: 10px;
+  }
+}
+
+#notice {
+  color: green;
+  height: auto;
+  margin: 0px 20px 0 20px;
+  padding: 5px 5px 5px 5px;
+  border: 1px solid green;
+  background-color: #FFFFFF;
+}
+
+#alert {
+  color: red;
+  height: auto;
+  margin: 0px 20px 0 20px;
+  padding: 5px 5px 5px 5px;
+  border: 1px solid red;
+  background-color: #FFFFFF;
+}
+
+.field_with_errors {
+  padding: 2px;
+  background-color: red;
+  display: table;
+}
+
+#error_explanation {
+  width: 450px;
+  border: 2px solid red;
+  padding: 7px;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+  h2 {
+    text-align: left;
+    font-weight: bold;
+    padding: 5px 5px 5px 15px;
+    font-size: 12px;
+    margin: -7px;
+    margin-bottom: 0px;
+    background-color: #c00;
+    color: #fff;
+  }
+  ul li {
+    font-size: 12px;
+    list-style: square;
+  }
+  
+
+  
+}
