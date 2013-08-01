@@ -1,8 +1,12 @@
-<p class="itemTitleBlue">こんなときどうする？　検索画面</p>
+<% content_for :title do %>こんな時どうする？<% end %>
+<%= render 'help' %>
+
+<p class="itemTitleBlue">こんな時どうする？</p>
 
 <%= render 'message' %>
 
 <p>項目を絞りこみたい場合は、キーワードを入力して「検索」ボタンを押下してください。複数のキーワードを指定したい場合は、スペース区切りで入力してand/orを指定してください。</p>
+
 <%= form_tag({:action => 'search'} , {:method=>"get"} ) do %>
   <table>
     <tr>
@@ -15,56 +19,22 @@
         <td><%= radio_button_tag("condition" , "and" ) %>and</td>
         <td><%= radio_button_tag("condition" , "or" , true) %>or</td>
       <% end %>
-      <td><%= submit_tag "検索" %></td>
+      <td><%= submit_tag "検索" , :title => "項目、ケース、手順を対象に検索します。"%>
+      <td><br></td>
+      
     </tr>
   </table>
 <% end %>
 
-<p></p>
 
 <p>項目を新規追加したい場合は、「追加」ボタンを押下してください。編集、削除したい場合は、各項目の「変更」欄のリンクをクリックしてください。</p>
-<%= button_to "追加", {:action => 'add'} %>
+<%= button_to "新規追加", {:action => 'add'} , :title => "新しく項目を追加します。"  %>
 
-<p>VPN接続の場合は、ターミナルサーバー(MetaFrame)より以下のフォルダを開いてください。お気に入りに登録しておくと次回よりスムーズに開けます。</p>
-<div class="enclosed"><%= FILE_SERVER_PATH %></div>
+<%= render 'list' %>
 
 
-<p></p>
-
-<table class="listTable">
-  <col class="idCol">
-  <col class="itemCol">
-  <col class="update_userCol">
-  <col class="changeCol">
-  <col class="caseCol;">
-  <col class="procedureCol">
-  <col class="referenceCol">
-  <tr>
-    <th>ID</th>
-    <th>項目</th>
-    <th>登録者</th>
-    <th>変更</th>
-    <th>ケース</th>
-    <th>手順</th>
-    <th>参照情報 &nbsp;&nbsp;<%= link_to FILE_SERVER_PATH do %><%= image_tag("/assets/folder.png", :alt => '参考資料') %>参考資料フォルダを開く<% end %></th>
-  </tr>
-  <% @list.each do |item| %>
-    <% count = item.cases.length %>
-    <tr>
-    <td rowspan=<%= count %>><%= item.id %></td>
-    <td rowspan=<%= count %>><%= item.name %></td>
-    <td rowspan=<%= count %>><%= item.update_user %></td>
-    <td rowspan=<%= count %>><%= link_to "編集", {:action => 'edit', :id => item.id} %><br><br>
-    <%= link_to "削除", {:action => "delete", :id => item.id }, :confirm => "「" + item.name + "」を削除します。よろしいですか？" %></td>
-    <% item.cases.each do |a_case| %>
-      <td><%= a_case.name %></td>
-      <% a_case.procedures.each do |procedure| %>
-        <td><%= auto_link((br procedure.name), :html => { :target => "_blank" }) %></td>
-        <td><%= auto_link((br procedure.reference), :html => { :target => "_blank" }) %></td>
-      <% end %>
-    </tr>
-    <% end %>
-  <% end %>
-  </tr>
-</table>
-
+<script language="javascript">
+window.onload = function() {
+   document.getElementById("keyWords").focus();
+}
+</script>

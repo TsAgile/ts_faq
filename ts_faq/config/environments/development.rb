@@ -16,6 +16,8 @@ TsFaq::Application.configure do
   config.consider_all_requests_local       = true
   # コントローラのキャッシュ設定をするかの設定
   config.action_controller.perform_caching = false
+  
+  #config.exceptions_app = self.routes
 
   # 電子メールが配信完了できない場合にエラーを発生させるかの設定
   # Don't care if the mailer can't send
@@ -40,4 +42,12 @@ TsFaq::Application.configure do
   # Assetの結合と圧縮の設定
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  # ログローテーションの設定
+  config.logger = Logger.new(config.paths["log"].first, 'dayly') # 日ごとにローテート
+  # ログレベルの設定
+  config.logger.level = Logger::DEBUG
+  # ログに日時を追加
+  config.logger.formatter = Logger::Formatter.new
+  config.logger.datetime_format = "%Y-%m-%d %H:%M:%S"
 end
