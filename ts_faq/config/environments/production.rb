@@ -13,13 +13,13 @@ TsFaq::Application.configure do
 
   # assetsの静的ファイルの設定
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  config.serve_static_assets = true
+  config.serve_static_assets = false
 
-  # assetsでコンパイルする設定
+  # assetsでコンパイルする設定（デフォルト＝true）
   # Compress JavaScripts and CSS
-  config.assets.compress = true
+  config.assets.compress = false
 
-  # ファイルがないときにファイルを探して自動コンパイル
+  # ファイルがないときにファイルを探して自動コンパイル（デフォルト＝false）
   # Don't fallback to assets pipeline if a precompiled asset is missed
   config.assets.compile = true
 
@@ -45,6 +45,17 @@ TsFaq::Application.configure do
 
   # Use a different logger for distributed setups
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
+  
+  # ログローテーションの設定（10MBを超えるとファイル作成、5ファイル以上は削除）
+  config.logger = Logger.new(config.paths["log"].first, 5, 10 * 1024 * 10)
+  # ログレベルの設定（ログの量を減らすため、警告以上のみ表示）
+  #config.logger.level = Logger::WARN
+  config.logger.level = Logger::INFO
+  #config.logger.level = Logger::DEBUG
+  # ログに日時を追加
+  config.logger.formatter = Logger::Formatter.new
+  config.logger.datetime_format = "%Y-%m-%d %H:%M:%S"
+
 
   # Use a different cache store in production
   # config.cache_store = :mem_cache_store

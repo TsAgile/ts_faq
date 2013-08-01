@@ -22,7 +22,10 @@ TsFaq::Application.routes.draw do
   match 'list/export'
   # インポート
   match 'list/import'
-  
+  # VPN説明画面
+  match 'list/vpn'
+  # ヘルプ画面
+  match 'list/help'
   
   
   # The priority is based upon order of creation:
