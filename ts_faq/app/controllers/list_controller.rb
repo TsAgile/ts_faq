@@ -6,7 +6,8 @@ class ListController < ApplicationController
 
   # 一覧表示
   def index
-    @list = Item.all
+    reset_session     #セッションをリセット
+    @list = Item.all  # 全件取得
   end
   
   # キーワード検索
@@ -69,7 +70,8 @@ class ListController < ApplicationController
     
     # 検索結果が0件の場合
     if(@list.size) == 0 then
-      flash.now[:notice] = NOTICE_NOT_FOUND
+      # メッセージ表示
+      flash.now[:info] = NOTICE_NOT_FOUND
     end
 
     # 一覧画面表示
@@ -89,12 +91,13 @@ class ListController < ApplicationController
   # 編集
   def edit
     if Item.exists?(:id => params[:id]) then
+      # データ取得
       @item = Item.find(params[:id])
       # 編集画面表示
       render :action => 'edit'
     else
       # 存在しない場合、エラーメッセージ
-      flash.now[:alert] = ALERT_ALREADY_DELETED 
+      flash.now[:danger] = ALERT_ALREADY_DELETED 
       # 再検索
       search
     end
@@ -106,10 +109,10 @@ class ListController < ApplicationController
     if Item.exists?(:id => params[:id]) then
       @item = Item.find(params[:id])
       @item.destroy
-      flash.now[:notice] = NOTICE_DELETE_COMPLETED
+      flash.now[:success] = NOTICE_DELETE_COMPLETED
     else
       # 存在しない場合、エラーメッセージ
-      flash.now[:alert] = ALERT_ALREADY_DELETED
+      flash.now[:danger] = ALERT_ALREADY_DELETED
     end
     
     # 検索処理
@@ -121,8 +124,19 @@ class ListController < ApplicationController
     # 同一トランザクション内で処理
     ActiveRecord::Base.transaction do
     
-      # 既存データがあれば削除
-      if Item.exists?(:id => params[:id]) then
+      # IDがセットされている場合（＝既存データの編集時）
+      if (params[:itemid] != "") then
+
+        # IDが既に削除されている場合
+        unless Item.exists?(:id => params[:itemid]) then
+          # エラーメッセージ
+          flash.now[:danger] = ALERT_ALREADY_DELETED
+          # 再検索
+          search
+          return
+        end
+        
+        # データ取得
         @item = Item.find(params[:itemid])
         
         # 排他チェック
@@ -133,13 +147,9 @@ class ListController < ApplicationController
           return
         end
         
+        # 既存データ削除
         @item.destroy
-      else
-        # 存在しない場合、エラーメッセージ
-        flash.now[:alert] = ALERT_ALREADY_DELETED
-        # 再検索
-        search
-        return
+        
       end
       
       # 項目を登録
@@ -168,7 +178,7 @@ class ListController < ApplicationController
     end
     
     # 処理完了メッセージ
-    flash.now[:notice] = NOTICE_SAVE_COMPLETED
+    flash.now[:success] = NOTICE_SAVE_COMPLETED
     
     # 編集画面表示
     render :action => 'edit'
@@ -188,6 +198,7 @@ class ListController < ApplicationController
           csv << [item.id, item.name, item.update_user]
         end
       end
+      #data = data.encode(Encoding::SJIS)
       send_data(data, type: 'text/csv', filename: "items_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
     
     # 「ケース」の場合
@@ -199,6 +210,7 @@ class ListController < ApplicationController
           csv << [a_case.id, a_case.item_id, a_case.name]
         end
       end
+      #data = data.encode(Encoding::SJIS)
       send_data(data, type: 'text/csv', filename: "cases_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
     
     # 「手順」の場合
@@ -210,28 +222,14 @@ class ListController < ApplicationController
           csv << [procedure.id, procedure.case_id, procedure.name, procedure.reference]
         end
       end
+      #data = data.encode(Encoding::SJIS)
       send_data(data, type: 'text/csv', filename: "procedures_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
     end
-    
-    # 処理完了メッセージ
     
   end
   
   # インポート
   def import
-    
-    # 全てのファイルが選択されていない場合
-    if(params[:item_file].blank?  || 
-       params[:case_file].blank?  ||  
-       params[:procedure_file].blank?) then
-
-      # メッセージ表示
-      flash.now[:alert] = ALERT_IMPORT_FILE
-
-      # 管理者画面表示
-      render :action => 'admin'
-      return
-    end
 
     # 同一トランザクション内で処理
     ActiveRecord::Base.transaction do
@@ -260,9 +258,18 @@ class ListController < ApplicationController
       end
       
       # 処理完了メッセージ
-      flash.now[:notice] = NOTICE_IMPORT_COMPLETED
+      flash.now[:success] = NOTICE_IMPORT_COMPLETED
+      
+      # 管理者画面表示
       render :action => 'admin'
     end
-
+  end
+  
+  # ヘルプ
+  def help
+    @list = Array.new
+    @list.push Item.find(1)
+    # ヘルプ画面表示
+    render :action => 'help'
   end
 end

@@ -1,23 +1,28 @@
+<% content_for :title do %>編集画面 - こんな時どうする？<% end %>
+<%= render 'help' %>
 <p class="itemTitleBlue">こんなときどうする？　編集画面</p>
 
 <%= render 'message' %>
 
 <% if @item.errors.size > 0 %>
   <% @item.errors.full_messages.each do |msg| %>
-    <p id="alert"><%= msg %></p>
+    <p class="alert alert-danger"><%= msg %></p>
   <% end %>
 <% end %>
 
-<p>検索画面へ戻る場合は「戻る」ボタンを押下してください。</p>
-<%= button_to '戻る', :action => 'search' %>
 
-<p>ケースを追加する場合は「追加」ボタンを押下してください。</p>
-<%= button_to_function '追加', onClick="AddTableRows()" %>
+<p></p>
 
-<p>編集を保存する場合は「保存」ボタンを押下してください。</p>
-<%= form_tag( :action => 'save' ) do %>
+<%= button_to "検索画面へ戻る", {:action => 'search' }, :title => "検索画面に戻ります。"  %>
+
+<p></p>
+<p>編集が完了したら、「編集を保存」ボタンで編集を保存してください。ケース入力欄を追加する場合は、「ケース追加」ボタンを押すと最終行に追加されます。</p>
+
+<%= form_tag( :action => 'save') do %>
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-  <%= submit_tag "保存" %>
+  <%= submit_tag "編集を保存" , :title => "編集を保存します。" %>
+ &nbsp;&nbsp;
+  <%= button_to_function "ケース追加", onClick="AddTableRows()" , { :title => "ケース入力欄を最終行に追加します。"} %> 
   <p></p>
   <table id="listTable" class="listTable">
   <col class="idCol">
@@ -34,7 +39,7 @@
       <th>ケース</th>
       <th>変更</th>
       <th>手順</th>
-      <th>参照情報 &nbsp;&nbsp;<%= link_to FILE_SERVER_PATH do %><%= image_tag("/assets/folder.png", :alt => '参考資料') %>参考資料フォルダを開く<% end %></th>
+      <th>参照情報 &nbsp;&nbsp;<%= render 'reference' %></th>
     </tr>
     <% count = @item.cases.length %>
     <tr>
@@ -46,7 +51,7 @@
       <td rowspan=<%= count %>><%= text_area_tag("update_user", @item.update_user ) %></td>
       <% @item.cases.each do |a_case| %>
         <td><%= text_area_tag("casename[]", a_case.name ) %></td>
-        <td><%= link_to_function '削除', onClick="DelTableRows(this)" , { :id => "delete" } %></td>
+        <td><%= link_to_function '削除', onClick="DelTableRows(this)" , { :id => "delete" , :title => "ケースを削除します。（削除は「編集を保存」ボタンで反映されます）"} %></td>
         <%= hidden_field_tag("caseid[]", a_case.id ) %>
         <% a_case.procedures.each do |procedure| %>
           <td><%= text_area_tag("procedurename[]", procedure.name ) %></td>
@@ -57,3 +62,4 @@
     </tr>
   </table>
 <% end %>
+</span>

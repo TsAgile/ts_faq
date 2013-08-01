@@ -1,0 +1,39 @@
+<p></p>
+
+<table class="listTable">
+  <col class="idCol">
+  <col class="itemCol">
+  <col class="update_userCol">
+  <col class="changeCol">
+  <col class="caseCol;">
+  <col class="procedureCol">
+  <col class="referenceCol">
+  <tr>
+    <th>ID</th>
+    <th>項目</th>
+    <th>登録者</th>
+    <th>変更</th>
+    <th>ケース</th>
+    <th>手順</th>
+    <th>参照情報 &nbsp;&nbsp;<%= render 'reference' %></th>
+  </tr>
+  <% @list.each do |item| %>
+    <% count = item.cases.length %>
+    <tr>
+    <td rowspan=<%= count %>><%= item.id %></td>
+    <td rowspan=<%= count %>><%= item.name %></td>
+    <td rowspan=<%= count %>><%= item.update_user %></td>
+    <td rowspan=<%= count %>><%= link_to "編集", {:action => 'edit', :id => item.id} %><br><br>
+    <%= link_to "削除", {:action => "delete", :id => item.id }, :confirm => "「" + item.name + "」を削除します。よろしいですか？" %></td>
+    <% item.cases.each do |a_case| %>
+      <td><%= a_case.name %></td>
+      <% a_case.procedures.each do |procedure| %>
+        <td><%= auto_link((br procedure.name), :html => { :target => "_blank" }) %></td>
+        <td><%= auto_link((br procedure.reference), :html => { :target => "_blank" }) %></td>
+      <% end %>
+    </tr>
+    <% end %>
+  <% end %>
+  </tr>
+</table>
+
