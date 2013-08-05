@@ -1,3 +1,5 @@
-<%= link_to FILE_SERVER_PATH do %><%= image_tag("/assets/folder.png") %>参考資料フォルダ<% end %>
-
-<%= link_to "(VPNはこちら)" ,{ :action => "vpn" }  , :target => "blank"  %>
+<%= link_to FILE_SERVER_PATH , :title => "統合ファイルサーバ上のフォルダを表示します。
+VPNからはご利用いただけません。" do %><%= image_tag("/assets/folder.png") %>参考資料フォルダ
+<% end %>
+&nbsp;
+<%= link_to "(VPNはこちら)" ,{ :action => "vpn" }  , :target => "_blank" %>
