@@ -1,0 +1,15 @@
+<span style="float:right">
+  <%= link_to "ヘルプ（FAQ）" ,{ :action => "help" }  , :target => "blank"  %>&nbsp;&nbsp;</span>
+<span style="clear:right"></span>
+
+<p class="itemTitleBlue"><%= content_for?(:header) ? yield(:header) : "" %></p>
+
+<% if flash[:info] %>
+  <p class="alert alert-info"><%= flash[:info] %></p>
+<% end %>
+<% if flash[:danger] %>
+  <p class="alert alert-danger"><%= flash[:danger] %></p>
+<% end %>
+<% if flash[:success] %>
+  <p class="alert alert-success"><%= flash[:success] %></p>
+<% end %>
