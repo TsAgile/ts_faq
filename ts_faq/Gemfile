@@ -26,6 +26,12 @@ end
 
 gem 'jquery-rails'
 
+
+#以下はLinux環境でのみ必要
+#（therubyracerはWindowsに対応していないため、ローカルで実行する場合は以下をコメントアウトすること）
+gem 'therubyracer'
+gem 'execjs'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
