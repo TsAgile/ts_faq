@@ -1,9 +1,6 @@
 <% content_for :title do %>こんな時どうする？<% end %>
-<%= render 'help' %>
-
-<p class="itemTitleBlue">こんな時どうする？</p>
-
-<%= render 'message' %>
+<% content_for :header do %>こんな時どうする？<% end %>
+<%= render 'header' %>
 
 <p>項目を絞りこみたい場合は、キーワードを入力して「検索」ボタンを押下してください。複数のキーワードを指定したい場合は、スペース区切りで入力してand/orを指定してください。</p>
 
@@ -19,7 +16,8 @@
         <td><%= radio_button_tag("condition" , "and" ) %>and</td>
         <td><%= radio_button_tag("condition" , "or" , true) %>or</td>
       <% end %>
-      <td><%= submit_tag "検索" , :title => "項目、ケース、手順を対象に検索します。"%>
+      <td><%= submit_tag "検索" , :title => "キーワード検索を行います。
+検索範囲は、「項目」「ケース」「手順」欄です。"%>
       <td><br></td>
       
     </tr>

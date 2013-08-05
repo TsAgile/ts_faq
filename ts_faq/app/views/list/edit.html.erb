@@ -1,8 +1,6 @@
 <% content_for :title do %>編集画面 - こんな時どうする？<% end %>
-<%= render 'help' %>
-<p class="itemTitleBlue">こんなときどうする？　編集画面</p>
-
-<%= render 'message' %>
+<% content_for :header do %>こんなときどうする？　編集画面<% end %>
+<%= render 'header' %>
 
 <% if @item.errors.size > 0 %>
   <% @item.errors.full_messages.each do |msg| %>
@@ -10,10 +8,10 @@
   <% end %>
 <% end %>
 
-
 <p></p>
 
-<%= button_to "検索画面へ戻る", {:action => 'search' }, :title => "検索画面に戻ります。"  %>
+<%= button_to "検索画面へ戻る", {:action => 'search' }, :title => "検索画面に戻ります。
+保存していないデータは破棄されますのでご注意ください。"  %>
 
 <p></p>
 <p>編集が完了したら、「編集を保存」ボタンで編集を保存してください。ケース入力欄を追加する場合は、「ケース追加」ボタンを押すと最終行に追加されます。</p>
@@ -51,7 +49,8 @@
       <td rowspan=<%= count %>><%= text_area_tag("update_user", @item.update_user ) %></td>
       <% @item.cases.each do |a_case| %>
         <td><%= text_area_tag("casename[]", a_case.name ) %></td>
-        <td><%= link_to_function '削除', onClick="DelTableRows(this)" , { :id => "delete" , :title => "ケースを削除します。（削除は「編集を保存」ボタンで反映されます）"} %></td>
+        <td><%= link_to_function '削除', onClick="DelTableRows(this)" , { :id => "delete" , :title => "ケースを削除します。
+削除は「編集を保存」ボタンで反映されます。"} %></td>
         <%= hidden_field_tag("caseid[]", a_case.id ) %>
         <% a_case.procedures.each do |procedure| %>
           <td><%= text_area_tag("procedurename[]", procedure.name ) %></td>
