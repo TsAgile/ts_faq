@@ -198,7 +198,7 @@ class ListController < ApplicationController
           csv << [item.id, item.name, item.update_user]
         end
       end
-      #data = data.encode(Encoding::SJIS)
+      data = data.kconv(Kconv::SJIS,Kconv::UTF8)
       send_data(data, type: 'text/csv', filename: "items_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
     
     # 「ケース」の場合
@@ -210,7 +210,7 @@ class ListController < ApplicationController
           csv << [a_case.id, a_case.item_id, a_case.name]
         end
       end
-      #data = data.encode(Encoding::SJIS)
+      data = data.kconv(Kconv::SJIS,Kconv::UTF8)
       send_data(data, type: 'text/csv', filename: "cases_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
     
     # 「手順」の場合
@@ -222,7 +222,7 @@ class ListController < ApplicationController
           csv << [procedure.id, procedure.case_id, procedure.name, procedure.reference]
         end
       end
-      #data = data.encode(Encoding::SJIS)
+      data = data.kconv(Kconv::SJIS,Kconv::UTF8)
       send_data(data, type: 'text/csv', filename: "procedures_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}.csv")
     end
     
