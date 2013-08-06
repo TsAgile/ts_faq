@@ -1,8 +1,6 @@
 <% content_for :title do %>管理者向けメニュー - こんなときどうする？<% end %>
-<%= render 'help' %>
-<p class="itemTitleBlue">こんなときどうする？　管理者向けメニュー</p>
-
-<%= render 'message' %>
+<% content_for :header do %>こんなときどうする？　管理者向けメニュー<% end %>
+<%= render 'header' %>
 
 <p>データ全件をファイル出力したい場合は、対象テーブルを指定して「エクスポート」ボタンを押下してください。</p>
   <table>
