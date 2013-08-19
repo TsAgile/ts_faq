@@ -14,7 +14,6 @@ textarea {
   padding: 1px 0 1px 0;
 }
 
-
 ul, li {
   list-style-type: none;
 }
@@ -39,7 +38,6 @@ p, ol, ul, td {
 }
 
 
-
 /*-----------------------------------------------*/
 /* font-family, font-size (まとめて記述) */
 /*-----------------------------------------------*/
@@ -59,7 +57,7 @@ input, textarea, select {
   font-size: 7pt;
 }
 
-/*---------- テーブル（背景：白） ----------*/
+/*---------- リストテーブル ----------*/
 .listTable {
   margin: 2px 10px 2px 10px;
   border-collapse:collapse;
@@ -103,16 +101,16 @@ input, textarea, select {
    width:3%;
   }
   .caseCol {
-   width:13%;
+   width:11%;
   }
   .procedureCol {
-   width:30%;
+   width:32%;
   }
   .referenceCol {
    width:30%;
   }
   
-/*---------- 項目タイトル ----------*/
+/*---------- タイトル ----------*/
 .itemTitleBlue {
   margin: 10px 0 6px 0;
   padding: 4px 10px 2px 3px;
@@ -122,24 +120,6 @@ input, textarea, select {
   background: #EEEEEE;
   font-size: 18px;
   font-weight: bold;
-}
-
-.itemTitleRed {
-  margin: 10px 0 6px 0;
-  padding: 4px 10px 2px 3px;
-  border-left: 4px solid #CC3300;
-  border-right: 1px solid #CCCCCC;
-  border-bottom: 1px solid #CCCCCC;
-  background: #EEEEEE;
-} 
-
-/*---------- 非強調文字 ----------*/
-.weak {
-  color: #999999;
-}
-
-.small {
-  font-size: 9pt;
 }
 
 /*---------- 囲み ----------*/
@@ -152,19 +132,7 @@ input, textarea, select {
   background-color: #FFFFFF;
 }
 
-pre {
-  background-color: #eee;
-  padding: 10px;
-  font-size: 11px;
-}
-
-div {
-  &.field, &.actions {
-    margin-bottom: 10px;
-  }
-}
-
-
+/*---------- メッセージ ----------*/
 .alert {
   padding: 10px 35px 10px 15px;
   margin-bottom: 20px;
