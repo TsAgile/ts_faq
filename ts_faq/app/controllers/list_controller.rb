@@ -6,7 +6,7 @@ class ListController < ApplicationController
 
   # 一覧表示
   def index
-    reset_session     #セッションをリセット
+    reset_session     # セッションをリセット
     @list = Item.all  # 全件取得
   end
   
@@ -127,7 +127,7 @@ class ListController < ApplicationController
       # IDがセットされている場合（＝既存データの編集時）
       if (params[:itemid] != "") then
 
-        # IDが既に削除されている場合
+        # 項目が既に削除されている場合
         unless Item.exists?(:id => params[:itemid]) then
           # エラーメッセージ
           flash.now[:danger] = ALERT_ALREADY_DELETED
@@ -267,8 +267,10 @@ class ListController < ApplicationController
   
   # ヘルプ
   def help
+    # ID=1を検索してリストにセット
     @list = Array.new
     @list.push Item.find(1)
+    
     # ヘルプ画面表示
     render :action => 'help'
   end
