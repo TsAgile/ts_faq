@@ -11,9 +11,9 @@ TsFaq::Application.configure do
   # コントローラのキャッシュ設定をするかの設定
   config.action_controller.perform_caching = true
 
-  # assetsの静的ファイルの設定
+  # assetsの静的ファイルの設定（デフォルト＝false）
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  config.serve_static_assets = false
+  config.serve_static_assets = true
 
   # assetsでコンパイルする設定（デフォルト＝true）
   # Compress JavaScripts and CSS
