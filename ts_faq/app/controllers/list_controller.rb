@@ -7,7 +7,7 @@ class ListController < ApplicationController
   # 一覧表示
   def index
     reset_session     # セッションをリセット
-    @list = Item.all  # 全件取得
+    @list = Array.new # 検索結果のリスト作成
   end
   
   # キーワード検索
