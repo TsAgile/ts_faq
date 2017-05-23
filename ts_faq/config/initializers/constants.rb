@@ -5,7 +5,7 @@
 #           変更を反映するには、再起動が必要です。
 
 # 参考資料フォルダのパス
-FILE_SERVER_PATH = 'file://Sp8-i5-dfs3/ICC/4P0000Ｓ開トヨタソリ部【公開（社員）】/Mother/庶務/こんな時どうする/参考資料/'
+FILE_SERVER_PATH = 'file://Sp8-i5-dfs3/ICC/4P0000Ｓ開ＥＳ４部【公開（社員）】/Mother/庶務/こんな時どうする/参考資料/'
 # ターミナルサーバのURL
 METAFRAME_URL    = 'http://nfuse.ogis-ri.co.jp/MetaFrame/'
 
